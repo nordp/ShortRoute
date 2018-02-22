@@ -1,6 +1,6 @@
 public class CompKruskalEdge {
 
-    public static Collection<BusStop> computeEdges(){
+    public static Collection<BusEdge> computeEdges(){
         return null;
     }
     
