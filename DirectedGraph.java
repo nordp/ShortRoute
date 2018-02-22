@@ -12,13 +12,13 @@ public class DirectedGraph<E extends Edge> {
 		;
 	}
 
-	public Iterator<E> shortestPath(int from, int to) {
-		return null;
+	public Iterator<E> shortestPath(int from, int to) {	
+		return CompDijkstraPath.computePath().iterator();
 		// DIJKSTRA
 	}
 		
 	public Iterator<E> minimumSpanningTree() {
-		return null;
+		return CompKruskalEdge.computeEdges().iterator();
 		// KRUSKAL
 	}
 
