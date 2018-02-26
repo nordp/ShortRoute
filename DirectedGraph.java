@@ -65,6 +65,7 @@ public class DirectedGraph<E extends Edge> {
 
 				for(E e : cc[shortest]){
 					cc[e.to] = cc[longest];
+					cc[e.from] = cc[longest];
 				}
 				cc[shortest] = cc[longest];
 				
