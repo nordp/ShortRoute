@@ -16,11 +16,11 @@ public class DirectedGraph<E extends Edge> {
 	}
 
 	public Iterator<E> shortestPath(int from, int to) {	
-		PriorityQueue<QueueObject> p = new PriorityQueue<>(new CompDijkstraPath());
+		PriorityQueue<KnownPath> p = new PriorityQueue<>(new CompDijkstraPath());
 		boolean[] visited = new boolean[nodeList.length];
-		p.add(new QueueObject(from, 0, new LinkedList<E>()));
+		p.add(new KnownPath(from, 0, new LinkedList<E>()));
 		while(!p.isEmpty()){
-			QueueObject q = p.poll();
+			KnownPath q = p.poll();
 			if(!visited[q.getNode()]){
 				if(q.getNode() == to){
 					return q.getPath().iterator();
@@ -32,7 +32,7 @@ public class DirectedGraph<E extends Edge> {
 							List<E> path = new LinkedList();
 							path.addAll(q.path);
 							path.add(edge);
-							p.add(new QueueObject(edge.to, q.cost + edge.getWeight(), path));
+							p.add(new KnownPath(edge.to, q.cost + edge.getWeight(), path));
 						}
 					}
 				}
@@ -77,8 +77,17 @@ public class DirectedGraph<E extends Edge> {
 		// KRUSKAL
 	}
 
+	/**
+	 * Comparator for edges in Kruskals algorithm
+	 */
 	private class CompKruskalEdge implements Comparator<E>{
 
+		/**
+		 * Compares two edges by getWeight().
+		 * @param a an edge to compare to b
+		 * @param b an edge to compare to a
+		 * @return -1, 0, or 1 depending on a.getWeight() - b.getWeight() is > 0, == 0, or < 0, respectively.
+		 */
 		@Override
 		public int compare(E a, E b){
 			if( a == null || b == null){
@@ -89,28 +98,40 @@ public class DirectedGraph<E extends Edge> {
 		}
 	}
 
-	private class CompDijkstraPath implements Comparator<QueueObject>{
+	/**
+	 * Comparator for KnownPath in Dijkstras algorithm
+	 */
+	private class CompDijkstraPath implements Comparator<KnownPath>{
 
-		public int compare(QueueObject a, QueueObject b){
+		/**
+		 * Compares two known paths by cost.
+		 * @param a a path to compare to b
+		 * @param b a path to compare to a
+		 * @return -1, 0, or 1 depending on a.cost - b.cost is > 0, == 0, or < 0, respectively.
+		 */
+		public int compare(KnownPath a, KnownPath b){
 			if(a == null || b == null){
 				throw new NullPointerException();
 			}
-			if (a.cost == b.cost) return 0;
-			return a.cost < b.cost ? -1 : 1;
+			if (a.getCost() == b.getCost()) return 0;
+			return a.getCost() < b.getCost() ? -1 : 1;
 		}
 
 	}
 
-
-
-
-	//INRE KLASSER
-	private class QueueObject{
+	/**
+	 * A class describing a known path for reaching a node and it's cost.
+	 * @param node The node which the path reaches
+	 * @param cost The cost of the path reaching the node
+	 * @param path A list of edges of the path
+	 */
+	
+	private class KnownPath{
 		private int node;
 		private double cost;
 		private List<E> path;
 
-		public QueueObject(int node, double cost, List<E> path){
+		public KnownPath(int node, double cost, List<E> path){
 			this.node = node;
 			this.cost = cost;
 			this.path = path;
@@ -124,20 +145,13 @@ public class DirectedGraph<E extends Edge> {
 			return cost;
 		}
 
-		public void setNode(int node){
-			this.node = node;
-		}
-
-		public void setCost(double cost){
-			this.cost = cost;
-		}
-
 		public List<E> getPath(){
-			return this.path;
+			return path;
 		}
 
 	}
 
+	// Help method which fills an array with empty edge lists.
 	private void fillWithEmptyEdgeLists(List<E>[] list){
 		for(int i = 0; i < list.length; i++){
 			list[i] = new LinkedList();
