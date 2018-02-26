@@ -16,7 +16,7 @@ public class DirectedGraph<E extends Edge> {
 	}
 
 	public Iterator<E> shortestPath(int from, int to) {	
-		PriorityQueue<QueueObject> p = new PriorityQueue<>();
+		PriorityQueue<QueueObject> p = new PriorityQueue<>(new CompDijkstraPath());
 		boolean[] visited = new boolean[nodeList.length];
 		p.add(new QueueObject(from, 0, new LinkedList<E>()));
 		while(!p.isEmpty()){
@@ -89,11 +89,23 @@ public class DirectedGraph<E extends Edge> {
 		}
 	}
 
+	private class CompDijkstraPath implements Comparator<QueueObject>{
+
+		public int compare(QueueObject a, QueueObject b){
+			if(a == null || b == null){
+				throw new NullPointerException();
+			}
+			if (a.cost == b.cost) return 0;
+			return a.cost < b.cost ? -1 : 1;
+		}
+
+	}
+
 
 
 
 	//INRE KLASSER
-	private class QueueObject implements Comparable<QueueObject>{
+	private class QueueObject{
 		private int node;
 		private double cost;
 		private List<E> path;
@@ -124,15 +136,6 @@ public class DirectedGraph<E extends Edge> {
 			return this.path;
 		}
 
-		@Override
-		public int compareTo(QueueObject a){
-			if(a == null){
-				throw new NullPointerException();
-			}
-			if (this.cost == a.cost) return 0;
-			return this.cost < a.cost ? -1 : 1;
-			
-		}
 	}
 
 	private void fillWithEmptyEdgeLists(List<E>[] list){
